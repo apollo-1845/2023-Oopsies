@@ -1,4 +1,4 @@
-# Team Solaris :sunrise:
+# Team Oopsies 🤭
 ## Deadlines
 - Writing Program (Internal): **:warning: 1 February 2024**
 
