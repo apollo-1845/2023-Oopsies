@@ -7,8 +7,8 @@ start=time.process_time()
 def checkTimeDiff(start):
     return time.process_time()-start
 def convertToCV(image1,image2):
-    cv_image1 = cv2.imread(image1)
-    cv_image2 = cv2.imread(image2)
+    cv_image1 = cv2.imread(image1,0)
+    cv_image2 = cv2.imread(image2,0)
     return cv_image1, cv_image2
 def calculateFeatures(image1,image2, feature_number):
     orb=cv2.ORB_create(nfeatures= feature_number)
@@ -36,12 +36,12 @@ def convertToCoordinates(keypoints_1, keypoints_2, matches):
 def getMeanDistance(coordinates_1, coordinates_2):
     # considering that there will always be as many coordinates in coordinates 1 and coordinates 2, we don't actually need
     # to merge the lists
-    totalDistance = 0
+    totalDistance = 0.0
     numberOfCoordinates=len(coordinates_1)
     merged_coordinates = list(zip(coordinates_1, coordinates_2))
     for i in range(numberOfCoordinates):
-        deltaX = coordinates_1[0] - coordinates_2[0]
-        deltaY = coordinates_1[1] - coordinates_2[1]
+        deltaX = coordinates_1[0][0] - coordinates_2[0][0]
+        deltaY = coordinates_1[0][1] - coordinates_2[0][1]
         distance = math.hypot(deltaX, deltaY)
         totalDistance += distance
     return totalDistance / numberOfCoordinates
@@ -58,5 +58,5 @@ matches = calculateMatches(descriptors_1, descriptors_2)
 # for whatever reason, the program isn't finding any matches
 coordinates_1, coordinates_2 = convertToCoordinates(keypoints_1, keypoints_2, matches)
 pixel_Distance=getMeanDistance(coordinates_1,coordinates_2)
-getSpeed(pixel_Distance, 9)
+print(getSpeed(pixel_Distance, 9))
 
