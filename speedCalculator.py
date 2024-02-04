@@ -1,9 +1,10 @@
 import time
 import cv2
 import math
+from picamera import PiCamera
+import os
 # we will be using time instead of the tutorial's suggested EXIF data because the time function returns the time elapsed
 # with significantly greater precision than the time recorded in the EXIF data.
-start=time.process_time()
 def checkTimeDiff(start):
     return time.process_time()-start
 def convertToCV(image1,image2):
@@ -50,13 +51,48 @@ def getSpeed(feature_distance, time_difference):
     distance = feature_distance * 0.12648
     speed = distance / time_difference
     return speed
-image_1 = 'photo_07464.jpg'
-image_2 = 'photo_07465.jpg'
-image_1_cv, image_2_cv = convertToCV(image_1, image_2)
-keypoints_1, keypoints_2, descriptors_1, descriptors_2 = calculateFeatures(image_1_cv, image_2_cv, 1000)
-matches = calculateMatches(descriptors_1, descriptors_2)
-# for whatever reason, the program isn't finding any matches
-coordinates_1, coordinates_2 = convertToCoordinates(keypoints_1, keypoints_2, matches)
-pixel_Distance=getMeanDistance(coordinates_1,coordinates_2)
-print(getSpeed(pixel_Distance, 9))
+start_time=time.process_time
+total_time=0
+begin_time=0
+end_time=0
+time_between_photos=0
+camera=PiCamera()
+total_average_speeds=0
+total_pictures=0
+while total_time<600:
+    #this code runs for 10 minutes, which is 600 seconds
+    begin_time=time.process_time()
+    camera.capture("Photo1.jpg")
+    image_1="Photo1.jpg"
+    #apparently, it needs time to sleep
+    sleep(5)
+    camera.capture("Photo2.jpg")
+    #process_time doesn't actually account for sleep time, so I have to add it
+    #manually
+    total_time+=5
+    end_time=time.process_time()+5-begin_time()
+    image_1_cv, image_2_cv = convertToCV(image_1, image_2)
+    keypoints_1, keypoints_2, descriptors_1, descriptors_2 = calculateFeatures(image_1_cv, image_2_cv, 1000)
+    matches = calculateMatches(descriptors_1, descriptors_2)
+    # for whatever reason, the program isn't finding any matches
+    coordinates_1, coordinates_2 = convertToCoordinates(keypoints_1, keypoints_2, matches)
+    pixel_Distance=getMeanDistance(coordinates_1,coordinates_2)
+    total_average_speed+=getSpeed(pixel_Distance, end_time)
+    total_pictures+=1
+    total_time+=time.process_time-start_time
+    start_time=time.process_time
+mean_speed=total_average_speed/total_pictures
+#rounding mean speed to 5 s.f.
+string_speed=str(mean_speed)
+rounded_speed=""
+significant_figures=1
+index=0
+while significant_figures<6:
+    if string_speed[index]!=".":
+        rounded_speed+=string_speed[index]
+        significant_figures+=1
+    index+=1
+#adding it to a file
+with open("result.txt","w") as file:
+    file.write(rounded_speed)
 
