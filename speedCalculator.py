@@ -5,6 +5,8 @@ from picamera import PiCamera
 import os
 # we will be using time instead of the tutorial's suggested EXIF data because the time function returns the time elapsed
 # with significantly greater precision than the time recorded in the EXIF data.
+image_1 = 'photo_01929.jpg'
+image_1 = 'photo_01930.jpg'
 def checkTimeDiff(start):
     return time.process_time()-start
 def convertToCV(image1,image2):
