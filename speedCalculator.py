@@ -4,9 +4,6 @@ import math
 from picamera import PiCamera
 import os
 
-image_1 = 'photo_01929.jpg'
-image_1 = 'photo_01930.jpg'
-
 def checkTimeDiff(start):
     return time.process_time()-start
     
