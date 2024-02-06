@@ -19,10 +19,8 @@ def calculateFeatures(image1,image2, feature_number):
     keypoints2, descriptors2=orb.detectAndCompute(image2,None)
     return keypoints1, keypoints2, descriptors1,descriptors2
 def calculateMatches(descriptors_1, descriptors_2):
-    # making this more efficient is going to be a priority. Possibly by implementing a binary search
     brute_force = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
     matches = brute_force.match(descriptors_1, descriptors_2)
-    # do we even need to sort the matches?
     matches = sorted(matches, key=lambda x: x.distance)
     return matches
 def convertToCoordinates(keypoints_1, keypoints_2, matches):
@@ -37,8 +35,6 @@ def convertToCoordinates(keypoints_1, keypoints_2, matches):
         coordinates_2.append((x2,y2))
     return coordinates_1, coordinates_2
 def getMeanDistance(coordinates_1, coordinates_2):
-    # considering that there will always be as many coordinates in coordinates 1 and coordinates 2, we don't actually need
-    # to merge the lists
     totalDistance = 0.0
     numberOfCoordinates=len(coordinates_1)
     merged_coordinates = list(zip(coordinates_1, coordinates_2))
@@ -49,7 +45,6 @@ def getMeanDistance(coordinates_1, coordinates_2):
         totalDistance += distance
     return totalDistance / numberOfCoordinates
 def getSpeed(feature_distance, time_difference):
-    # I merged the calculation of *GSD/100000 into a single constant
     distance = feature_distance * 0.12648
     speed = distance / time_difference
     return speed
@@ -66,11 +61,8 @@ while total_time<600:
     begin_time=time.process_time()
     camera.capture("Photo1.jpg")
     image_1="Photo1.jpg"
-    #apparently, it needs time to sleep
     sleep(5)
     camera.capture("Photo2.jpg")
-    #process_time doesn't actually account for sleep time, so I have to add it
-    #manually
     total_time+=5
     end_time=time.process_time()+5-begin_time()
     image_1_cv, image_2_cv = convertToCV(image_1, image_2)
@@ -94,7 +86,6 @@ while significant_figures<6:
         rounded_speed+=string_speed[index]
         significant_figures+=1
     index+=1
-#adding it to a file
 with open("result.txt","w") as file:
     file.write(rounded_speed)
 
