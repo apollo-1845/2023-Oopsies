@@ -3,6 +3,7 @@ import cv2
 import math
 from picamera import PiCamera
 import os
+from pathlib import Path
 # we will be using time instead of the tutorial's suggested EXIF data because the time function returns the time elapsed
 # with significantly greater precision than the time recorded in the EXIF data.
 def convertToCV(image1,image2):
@@ -100,7 +101,10 @@ while significant_figures<6:
         significant_figures+=1
     index+=1
     
+#getting the main.py file directory
+base_folder=Path(__file__).parent.resolve()
+result_file= base_folder/ "result.txt"
 #adding it to a file
-with open("result.txt","w") as file:
+with open(result_file,"w") as file:
     file.write(rounded_speed)
 
