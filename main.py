@@ -59,7 +59,7 @@ time_between_photos=0
 camera=PiCamera()
 total_average_speeds=0
 total_pictures=0
-while total_time<600:
+while total_time<595:
     begin_time=time.process_time()
     camera.capture("Photo1.jpg")
     image_1="Photo1.jpg"
